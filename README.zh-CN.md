@@ -6,6 +6,78 @@
 
 当前主题以 `jandedobbeleer` 风格为基础做了定制：保留彩色 Powerline 提示符，并调整了 Python segment，使 conda 或 virtualenv 激活后可以直接在提示符中显示环境名，即使当前目录是用户主目录 `~`。
 
+## Oh My Posh 美化说明
+
+Oh My Posh 是一个跨平台 prompt 美化工具，可以根据当前终端上下文动态显示信息，例如：
+
+- 当前用户名和目录
+- Git 分支、远程同步状态、工作区改动
+- Node.js、Python、Go 等语言环境
+- conda 或 virtualenv 虚拟环境
+- 命令执行耗时
+- 上一条命令是否成功
+- 电池电量、当前时间、当前 Shell
+
+这套配置主要做了几件事：
+
+- 使用 Oh My Posh 接管 PowerShell 提示符样式
+- 使用 `jandedobbeleer` 风格作为基础主题
+- 修改 Python segment，让 conda 环境名可以稳定显示
+- 使用 PSReadLine 增强历史搜索、预测提示和 Tab 补全
+- 使用 Terminal-Icons 给文件列表增加图标
+- 保留一份 Windows Terminal 配置作为字体和配色参考
+
+如果提示符里出现乱码、方块或图标缺失，通常是字体没有配置好。建议在 Windows Terminal 中使用 Nerd Font，例如 `CaskaydiaCove Nerd Font` 或 `MesloLGM Nerd Font`。
+
+官方入口：
+
+- Oh My Posh 官网：<https://ohmyposh.dev/>
+- 官方主题列表：<https://ohmyposh.dev/docs/themes>
+
+## 主题推荐
+
+Oh My Posh 官方内置了很多主题，可以从官方主题列表预览效果。当前仓库默认使用的是改造后的 `jandedobbeleer` 风格。
+
+推荐优先尝试这些主题：
+
+| 主题 | 适合场景 |
+| --- | --- |
+| `jandedobbeleer` | 信息完整，Git、语言环境、状态提示都比较清楚，适合作为日常开发默认主题。 |
+| `powerlevel10k_modern` | 接近 Powerlevel10k 的现代风格，信息密度高，适合喜欢完整状态栏的人。 |
+| `powerlevel10k_rainbow` | 色彩更明显，区块感强，适合想快速区分不同状态的人。 |
+| `1_shell` | 风格简洁，常用信息清楚，适合不想太复杂但仍要 Powerline 效果的人。 |
+| `clean-detailed` | 清爽、克制，适合长期写代码时减少视觉负担。 |
+| `catppuccin_macchiato` / `catppuccin_mocha` | 配色柔和，适合喜欢 Catppuccin 色系的人。 |
+| `robbyrussell` | 简单经典，但默认信息较少；如果要显示 conda，需要额外加入 Python segment。 |
+
+如果没有安装 Nerd Font，可以优先选择名字里带 `minimal` 的主题。官方说明中也提到，`minimal` 主题通常不依赖 Nerd Font。
+
+切换到某个主题可以先导出一份本地配置：
+
+```powershell
+oh-my-posh config export --config jandedobbeleer --output "$HOME\.config\oh-my-posh\theme.omp.json"
+```
+
+然后在 `$PROFILE` 中加载它：
+
+```powershell
+oh-my-posh init pwsh --config "$HOME\.config\oh-my-posh\theme.omp.json" | Invoke-Expression
+```
+
+如果希望新主题继续显示 conda 环境，需要确认主题里有 `python` segment，并且启用了类似下面的配置：
+
+```json
+{
+  "options": {
+    "display_mode": "environment",
+    "fetch_virtual_env": true,
+    "home_enabled": true
+  },
+  "template": "  {{ .Venv }} ",
+  "type": "python"
+}
+```
+
 ## 文件说明
 
 | 文件 | 用途 |
