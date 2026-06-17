@@ -1,79 +1,29 @@
-oh-my-posh --init --shell pwsh --config "C:/Users/Administrator/mojada.omp.json" | Invoke-Expression
+# 1. Oh My Posh - prompt theme
+$ompTheme = Join-Path $HOME ".config\oh-my-posh\mojada.omp.json"
+oh-my-posh init pwsh --config $ompTheme | Invoke-Expression
 
-Import-Module -Name Terminal-Icons
+# 2. PSReadLine - history search and completion
+Import-Module PSReadLine -ErrorAction SilentlyContinue
+Set-PSReadLineOption -HistorySearchCursorMovesToEnd
+Set-PSReadLineKeyHandler -Key UpArrow -Function HistorySearchBackward
+Set-PSReadLineKeyHandler -Key DownArrow -Function HistorySearchForward
+Set-PSReadLineKeyHandler -Key Tab -Function MenuComplete
 
-Set-PSReadLineOption -PredictionSource History
-Set-PSReadLineOption -PredictionViewStyle ListView
-
-Set-PSReadLineKeyHandler -Key Tab -Function MenuComplete #Tab键会出现自动补全菜单
-Set-PSReadlineKeyHandler -Key UpArrow -Function HistorySearchBackward
-Set-PSReadlineKeyHandler -Key DownArrow -Function HistorySearchForward
-# 上下方向键箭头，搜索历史中进行自动补全
-
-function alias_git_status {
-	git status
-}
-function alias_git_push {
-	git push
-}
-function alias_git_pull {
-	git pull
-}
-function alias_git_add_everything {
-	git add .
-}
-function alias_git_commit {
-	git commit -m $args[0]
-}
-function alias_git_add_commit_everything {
-	git add .
-	git commit -m $args[0]
-}
-function alias_git_add_commit_push_everything {
-	git add .
-	git commit -m $args[0]
-	git push
-}
-function alias_git_log {
-	git log
-}
-function alias_git_log_pretty {
-	git log --pretty=format:"%h %s" --graph
-}
-function alias_git_switch_branch {
-	git checkout $args[0]
-}
-function alias_clear_screen {
-	clear
-}
-function alias_poweroff {
-	Stop-Computer -ComputerName localhost
-}
-function alias_reboot {
-	Restart-Computer
-}
-function alias_show {
-	explorer.exe .
-}
-function alias_hexo_deploy {
-    hexo clean
-    hexo d -g
+# 3. Prediction suggestions, only when the host supports them
+try {
+    Set-PSReadLineOption -PredictionSource History -ErrorAction Stop
+    Set-PSReadLineOption -PredictionViewStyle ListView -ErrorAction Stop
+} catch {
+    # Some redirected or embedded terminals do not support VT output.
 }
 
-Set-Alias gs alias_git_status
-Set-Alias gpush alias_git_push
-Set-Alias gpull alias_git_pull
-Set-Alias gae alias_git_add_everything
-Set-Alias gcom alias_git_commit
-Set-Alias gace alias_git_add_commit_everything
-Set-Alias gacpe alias_git_add_commit_push_everything
-Set-Alias glog alias_git_log
-Set-Alias glp alias_git_log_pretty
-Set-Alias gsb alias_git_switch_branch
-Set-Alias cl alias_clear_screen
-Set-Alias poweroff alias_poweroff
-Set-Alias reboot alias_reboot
-Set-Alias show alias_show
-Set-Alias hcd alias_hexo_deploy
+# 4. Terminal icons and Git helpers
+Import-Module Terminal-Icons -ErrorAction SilentlyContinue
+Import-Module posh-git -ErrorAction SilentlyContinue
 
-clear
+# 5. Small daily aliases
+Set-Alias ll Get-ChildItem
+Set-Alias which Get-Command
+Set-Alias grep Select-String
+
+Write-Host "PowerShell beautified environment loaded!" -ForegroundColor Green
