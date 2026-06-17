@@ -1,5 +1,7 @@
 # omp-mojada-theme-main
 
+[中文说明](README.zh-CN.md)
+
 Personal Windows Terminal + PowerShell 7 beautification files based on Oh My Posh.
 
 The current theme is a customized `jandedobbeleer` style prompt. It keeps the colorful prompt layout and updates the Python segment so active conda or virtualenv environments are visible, even from the home directory.
